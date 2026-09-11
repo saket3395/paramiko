@@ -840,6 +840,10 @@ class Channel(ClosingContextManager):
             sent, there is no way to determine how much data (if any) was sent.
             This is irritating, but identically follows Python's API.
         """
+        # `send` also accepts str (coerced by Message.add_string); memoryview
+        # does not, so coerce here first.
+        if isinstance(s, str):
+            s = util.b(s)
         view = memoryview(s)
         while view:
             sent = self.send(view)
@@ -862,6 +866,10 @@ class Channel(ClosingContextManager):
 
         .. versionadded:: 1.1
         """
+        # `send_stderr` also accepts str (coerced by Message.add_string);
+        # memoryview does not, so coerce here first.
+        if isinstance(s, str):
+            s = util.b(s)
         view = memoryview(s)
         while view:
             sent = self.send_stderr(view)
